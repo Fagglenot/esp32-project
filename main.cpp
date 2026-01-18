@@ -6,6 +6,9 @@ Servo myservo;
 const int servo = 26;
 const int echo = 19;
 const int trig = 18;
+int myValue;
+int chances = 3;
+bool legit = true;
 void setup() {
   myservo.attach(servo);
   lcd.init();
@@ -29,16 +32,51 @@ void loop() {
     myservo.write(0);
     return;
   }
-  lcd.setCursor(0,0);
-  lcd.print("Enter your passcode:");
-  int myValue = Serial.parseInt();
-  lcd.setCursor(0,1);
-  lcd.print(myValue);
-  if(myValue == 189023){
-    myservo.write(90);
-    lcd.print("Access Granted");
+  while(chances!=0){
+    lcd.setCursor(0,0);
+    if(legit) lcd.print("Enter your passcode:");
+    while (Serial.available() == 0) {
+      delay(10);
+    }
+    String input = Serial.readStringUntil('\n');
+    input.trim();
+    myValue = input.toInt();
+    while (Serial.available()) Serial.read();
+    legit = false;
+    lcd.setCursor(0,1);
+    lcd.print(myValue);
+    if(myValue == 189023){
+      myservo.write(90);
+      lcd.setCursor(0,2);
+      lcd.print("Access Granted");
+      delay(5000);
+      lcd.clear();
+      break;
+    }
+    else{
+      chances--;
+      lcd.clear();
+      lcd.setCursor(0,0);
+      lcd.print("Wrong Passcode");
+      lcd.setCursor(0,1);
+      lcd.print("You have ");
+      lcd.print(chances);
+      lcd.print(" tries left");
+      delay(2000);
+      lcd.clear();
+      legit = true;
+      }
+  }
+  if(chances==0){
+    lcd.clear();
+    lcd.print("No tries left");
+    lcd.setCursor(0,1);
+    lcd.print("Access Denied");
     delay(5000);
     lcd.clear();
-  }
+    legit = false;
+    }
+  
 }
+
 
