@@ -5,16 +5,16 @@
 #include <SPI.h>
 #include <MFRC522.h>
 
-// Inisialisasi LCD dan Servo
+// LCD dan Servo
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 Servo myservo;
 
-// Pin definitions
+// Pin definitions (PERBAIKI)
 const int servo = 26;
 const int echo = 19;
 const int trig = 18;
-const int RST_PIN = 22;
-const int SS_PIN = 21;
+const int RST_PIN = 4;    // PINDAH dari 22
+const int SS_PIN = 5;     // PINDAH dari 21
 
 // Keypad setup (4x4)
 const byte ROWS = 4;
@@ -25,8 +25,8 @@ char keys[ROWS][COLS] = {
   {'7','8','9','C'},
   {'*','0','#','D'}
 };
-byte rowPins[ROWS] = {13, 12, 14, 27}; // Sesuaikan dengan pin ESP32 Anda
-byte colPins[COLS] = {25, 33, 32, 15}; // Sesuaikan dengan pin ESP32 Anda
+byte rowPins[ROWS] = {13, 12, 14, 27};
+byte colPins[COLS] = {25, 33, 32, 15};
 Keypad keypad = Keypad(makeKeymap(keys), rowPins, colPins, ROWS, COLS);
 
 // RFID setup
